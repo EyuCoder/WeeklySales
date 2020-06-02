@@ -1,6 +1,6 @@
 import os
 import pyodbc
-import time, threading
+import threading
 from datetime import datetime, timedelta
 from DBHandler import Read, Write
 
@@ -33,37 +33,15 @@ def sync(conn, gateway_db, gateway_name):
     writer.write(conn_local, gateway_name, prev_sales, curr_sales, last_date)
 
 def weekly_sync():
-    with open("WeeklySales/gateways") as textFile:
+    with open("gateways") as textFile:
         lines = [line.split() for line in textFile]
         for ip in lines:
             print(ip[0])
             sync(conn, ip[0], ip[1])
 
-# def options():
-#     opt = input("choose: \n0: sync to Local DB\n1:generate report as excel\n2:exit:  ")
-#     if opt=='0':
-#         weekly_sync()
-#     elif opt=='1':
-#         print("Generating Report ...")
-#     elif opt=='2':
-#         print("saving ...")
-#     else:
-#         options()
-
-# if __name__ == "__main__":
-#     reader = Read()
-#     writer = Write()
-#     options()
-
-WAIT_TIME_SECONDS = 5
-
 reader = Read()
 writer = Write()
-# weekly_sync()
-
-ticker = threading.Event()
-while not ticker.wait(604800):
-    weekly_sync()
+weekly_sync()
 
 conn_local.close()
 conn.close()

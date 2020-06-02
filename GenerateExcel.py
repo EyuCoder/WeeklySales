@@ -12,13 +12,14 @@ conn_local = pyodbc.connect(
     "Trusted_Connection=Yes;"
 )
 
-workbook = xlsxwriter.Workbook(
-    '{} WeeklySales.xlsx'.format(datetime.date(datetime.now())))
+cwd = os.getcwd()+"\\reports"
+workbook = xlsxwriter.Workbook(f'{cwd}\\{datetime.date(datetime.now())} WeeklySales.xlsx')
 worksheet = workbook.add_worksheet()
 def openReport():
-    cwd = os.getcwd()
     excel = '\\{} WeeklySales.xlsx'.format(datetime.date(datetime.now()))
     report = cwd + excel
+    print(report)
+    print(cwd)
     subprocess.Popen(f'explorer /select, {report}"')
 
 def format_excel():
@@ -54,7 +55,7 @@ def generate():
     format_excel()
     
 
-    with open("WeeklySales/gateways") as textFile:
+    with open("gateways") as textFile:
         lines = [line.split() for line in textFile]
         for ip in lines:
             worksheet.write(names, 0, names)
