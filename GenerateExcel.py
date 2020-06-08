@@ -1,13 +1,14 @@
 import os
 import pyodbc
 import xlsxwriter
+from tqdm import tqdm
 from datetime import datetime
 from DBHandler import Read
 import subprocess
 
 conn_local = pyodbc.connect(
     "Driver=SQL Server Native Client 11.0;"
-    "Server=KINGSCXR\\SQLSERVER;"
+    "Server=SERVER_NAME;"
     "Database=WeeklySales;"
     "Trusted_Connection=Yes;"
 )
@@ -57,13 +58,11 @@ def generate():
 
     with open("gateways") as textFile:
         lines = [line.split() for line in textFile]
-        for ip in lines:
+        for ip in tqdm(lines, desc='Generating Report', unit='Gateways'):
             worksheet.write(names, 0, names)
             worksheet.write(names, 1, ip[1])
             
             sales_list = reader.weekly_sales(conn_local, ip[1])
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@")
-            print(sales_list)
             for item in sales_list:
                 worksheet.write(row, col, item)
                 col += 1
